@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-JobleApplication<joble>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.joble.joble.JobleApplication",
+            "projectName": "joble",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
