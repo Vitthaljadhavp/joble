@@ -1,7 +1,13 @@
 package com.joble.joble.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class LoginRequest {
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
+    @NotBlank(message = "Password is required")
     private String password;
 
     // Getters and setters

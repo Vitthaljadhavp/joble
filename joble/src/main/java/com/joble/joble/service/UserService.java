@@ -17,15 +17,33 @@ public class UserService {
     private UserRepository userRepository;
 
 
-    // @Autowired
-    // private BCryptPasswordEncoder passwordEncoder; // Automatically inject BCryptPasswordEncoder
-
     @Autowired
-    private PasswordEncoder passwordEncoder;  // Injecting the PasswordEncoder
+    private BCryptPasswordEncoder bCryptPasswordEncoder; // Automatically inject BCryptPasswordEncoder
+
+    // @Autowired
+    // private PasswordEncoder passwordEncoder;  // Injecting the PasswordEncoder
+
+
+    // Method to check if the raw password matches the hashed password in the database
+    public boolean checkPasswordMatch(String email, String rawPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // Log the raw password and stored hashed password for debugging
+            System.out.println("Stored password hash: " + user.getPassword()); // The hashed password in the database
+            System.out.println("Raw password: " + rawPassword); // The raw password input by the user
+
+            boolean passwordMatches = bCryptPasswordEncoder.matches(rawPassword, user.getPassword());
+            System.out.println("Password comparison result: " + passwordMatches);  // Debug log
+            return passwordMatches;
+        }
+        return false;
+    }
+
 
     public User registerUser(User user) {
         // Encode the password before saving the user
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
