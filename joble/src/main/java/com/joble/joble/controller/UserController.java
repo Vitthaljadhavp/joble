@@ -58,8 +58,10 @@ public class UserController {
         // If password matches, generate JWT token
         if (passwordMatches) {
             String token = jwtTokenProvider.generateToken(loginRequest.getEmail());
+            System.out.println("Generated Token: " + token);  // Log the generated token
             return ResponseEntity.ok("Bearer " + token);
         } else {
+            System.out.println("Invalid credentials for email: " + loginRequest.getEmail());  // Log invalid login attempt
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }

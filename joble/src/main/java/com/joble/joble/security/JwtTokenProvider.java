@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,13 +21,11 @@ public class JwtTokenProvider {
     private final long expiration;
 
     // Constructor to initialize the secret key and expiration from application.properties
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret,
+    public JwtTokenProvider(@Value("${jwt.secret-key}") String secret,
                             @Value("${jwt.expiration}") long expiration) {
-        this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+        this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)); // Use the correct key property
         this.expiration = expiration;
     }
-
-    
 
     // Generate JWT token
     public String generateToken(String username) {
