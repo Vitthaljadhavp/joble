@@ -16,13 +16,30 @@ const LoginPage = () => {
       // Attempt to log in the user
       const userData = await loginUser(email, password);
       
+      // Destructure response data
+      const { token, role } = userData;
+
       // Handle successful login (e.g., store JWT token in local storage)
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('authToken', token);  // Store JWT token
+      localStorage.setItem('role', role);  // Store user role (employer/jobseeker)
       
-      // Navigate to home page or dashboard
-      navigate('/');
+    //   // Navigate to home page or dashboard
+    //   navigate('/dashboard');
+    // } catch (err) {
+    //   // Handle error (e.g., show error message)
+    //   setError(err.response ? err.response.data : 'An error occurred. Please try again.');
+    // }
+
+    // Navigate based on the user role (for example)
+      if (role === 'EMPLOYER') {
+        navigate('/employer-dashboard');  // Employer Dashboard
+      } else if (role === 'JOBSEEKER') {
+        navigate('/jobseeker-dashboard');  // Jobseeker Dashboard
+      } else {
+        navigate('/dashboard');  // Fallback to general dashboard if role is not recognized
+      }
     } catch (err) {
-      // Handle error (e.g., show error message)
+      // Handle error (show message or log)
       setError(err.response ? err.response.data : 'An error occurred. Please try again.');
     }
   };
