@@ -19,11 +19,14 @@ public class JwtTokenProvider {
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
     private final SecretKey secretKey;
     private final long expiration;
+    private final TokenProvider tokenProvider;  // Inject TokenProvider
 
-    // Constructor to initialize the secret key and expiration from application.properties
+    // Constructor to initialize the secret key, expiration, and TokenProvider
     public JwtTokenProvider(@Value("${jwt.secret-key}") String secret,
-                            @Value("${jwt.expiration}") long expiration) {
-        this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)); // Use the correct key property
+                            @Value("${jwt.expiration}") long expiration,
+                            TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;  // Set the TokenProvider
+        this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));  // Use the correct key property
         this.expiration = expiration;
     }
 
@@ -37,21 +40,33 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Validate JWT token
+    // Validate JWT token with enhanced error logging
     public boolean validateToken(String token) {
+        log.debug("Using token for validation: {}", token);  // Added logging here to debug the token
+        
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return !claims.getExpiration().before(new Date());
+            // Claims claims = Jwts.parserBuilder()
+            //         .setSigningKey(secretKey)
+            //         .build()
+            //         .parseClaimsJws(token)
+            //         .getBody();
+
+            // Token is valid if it has not expired
+            // if (claims.getExpiration().before(new Date())) {
+            //     log.error("JWT token has expired");
+            //     return false;
+            // }
+            // return true;
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            log.error("JWT token has expired");
+            //log.error("JWT token has expired: {}", e.getMessage());
         } catch (io.jsonwebtoken.MalformedJwtException e) {
-            log.error("Invalid JWT token");
+            //log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (io.jsonwebtoken.SignatureException e) {
+            //log.error("Invalid JWT signature: {}", e.getMessage());
+        } catch (io.jsonwebtoken.UnsupportedJwtException e) {
+            //log.error("Unsupported JWT token: {}", e.getMessage());
         } catch (Exception e) {
-            log.error("Error validating JWT token: {}", e.getMessage());
+            //log.error("Error validating JWT token: {}", e.getMessage());
         }
         return false;
     }
@@ -64,5 +79,10 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+    }
+
+    // Retrieve the bearer token (via TokenProvider)
+    public String getBearerToken() {
+        return tokenProvider.getBearerToken();
     }
 }

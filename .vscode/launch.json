@@ -2,13 +2,28 @@
     "configurations": [
         {
             "type": "java",
+            "name": "JwtGenerator",
+            "request": "launch",
+            "mainClass": "com.joble.joble.security.JwtGenerator",
+            "projectName": "joble"
+        },
+        {
+            "type": "java",
+            "name": "GenerateKey",
+            "request": "launch",
+            "mainClass": "com.joble.joble.utils.GenerateKey",
+            "projectName": "joble"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-JobleApplication<joble>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "mainClass": "com.joble.joble.JobleApplication",
             "projectName": "joble",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=50461 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=joble"
         }
     ]
 }

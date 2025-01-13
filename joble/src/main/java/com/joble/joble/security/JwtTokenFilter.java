@@ -16,8 +16,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private JwtTokenProvider jwtTokenProvider;  // Inject JwtTokenProvider
 
-    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    private final TokenProvider tokenProvider;
+
+    // public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
+    //     this.jwtTokenProvider = jwtTokenProvider;
+    // }
+    public JwtTokenFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -27,37 +32,38 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Log the incoming request URL
         System.out.println("Request URL: " + request.getRequestURL());
 
-        // Retrieve the Authorization header
-        String token = request.getHeader("Authorization");
+        // Get the hardcoded token from TokenProvider
+        String token = tokenProvider.getBearerToken();
+        System.out.println("Using hardcoded token: " + token);  // Log the hardcoded token
 
-        // Log the token being extracted
-        System.out.println("Authorization header: " + token);
-
-        // Check if the token starts with "Bearer "
+        // Validate the token (use your own validation logic here)
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);  // Remove "Bearer " prefix
-            System.out.println("Extracted Token: " + token);  // Log the extracted token
+            System.out.println("Extracted Token: " + token);
 
-            // Validate the token
-            if (jwtTokenProvider.validateToken(token)) {
-                // Extract username from the token
-                String username = jwtTokenProvider.getUsernameFromToken(token);
-                System.out.println("Valid Token for User: " + username); // Log the username from token
+            // Add validation logic here (use your existing JWT validation logic)
+            boolean isValid = validateToken(token);  // Call your validation method
 
-                // Create an authentication token and set it in the SecurityContext
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(username, null, null);
-
+            if (isValid) {
+                // Authentication logic
+                String username = "dj";  // Simulate username extraction
+                System.out.println("Valid token for: " + username);
+                UsernamePasswordAuthenticationToken authenticationToken = 
+                    new UsernamePasswordAuthenticationToken(username, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                System.out.println("Authentication set for: " + username);  // Log authentication set
             } else {
-                System.out.println("Invalid token received: " + token);  // Log invalid token
+                System.out.println("Invalid token received.");
             }
         } else {
-            System.out.println("No token found in request");  // Log when no token is found
+            System.out.println("No token found in request.");
         }
 
-        // Continue with the filter chain
         filterChain.doFilter(request, response);
+    }
+
+    // Simulate token validation (you can replace with actual validation logic)
+    private boolean validateToken(String token) {
+        // Just check if the token is not empty for testing
+        return token != null && !token.isEmpty();
     }
 }
