@@ -2,7 +2,6 @@ package com.joble.joble.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +58,12 @@ public class JwtTokenProvider {
             // return true;
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             //log.error("JWT token has expired: {}", e.getMessage());
-        } catch (io.jsonwebtoken.MalformedJwtException e) {
+        } catch (io.jsonwebtoken.MalformedJwtException | io.jsonwebtoken.SignatureException | io.jsonwebtoken.UnsupportedJwtException e) {
             //log.error("Invalid JWT token: {}", e.getMessage());
-        } catch (io.jsonwebtoken.SignatureException e) {
-            //log.error("Invalid JWT signature: {}", e.getMessage());
-        } catch (io.jsonwebtoken.UnsupportedJwtException e) {
-            //log.error("Unsupported JWT token: {}", e.getMessage());
-        } catch (Exception e) {
+        }
+        //log.error("Invalid JWT signature: {}", e.getMessage());
+        //log.error("Unsupported JWT token: {}", e.getMessage());
+         catch (Exception e) {
             //log.error("Error validating JWT token: {}", e.getMessage());
         }
         return false;

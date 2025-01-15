@@ -1,11 +1,13 @@
 package com.joble.joble.security;
+import java.util.Date;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
 
 public class JwtGenerator {
     public static void main(String[] args) {
         String secretKey = "ij/wNZAJnW2CD/DmJDiJU3JEHcNKedPbGUIFEMEcpMY=";  // Use the secret key you configured in your application
+        @SuppressWarnings("deprecation")
         String token = Jwts.builder()
                 .setSubject("dj")
                 .setIssuedAt(new Date())

@@ -19,13 +19,7 @@ public class UserService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder; // Automatically inject BCryptPasswordEncoder
-
-    // @Autowired
-    // private PasswordEncoder passwordEncoder;  // Injecting the PasswordEncoder
-
-
-    // Method to check if the raw password matches the hashed password in the database
-    public boolean checkPasswordMatch(String email, String rawPassword) {
+ public boolean checkPasswordMatch(String email, String rawPassword) {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
@@ -47,9 +41,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User> findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 
 
     
