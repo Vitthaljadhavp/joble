@@ -9,8 +9,6 @@ public class LoginRequest {
     private String email;
     @NotBlank(message = "Password is required")
     private String password;
-
-    // Getters and setters
     public String getEmail() {
         return email;
     }
