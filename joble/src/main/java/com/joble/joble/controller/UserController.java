@@ -3,12 +3,16 @@ package com.joble.joble.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.joble.joble.model.User;
 import com.joble.joble.security.JwtTokenProvider;
 import com.joble.joble.service.UserService;
 import com.joble.joble.dto.LoginRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,6 +23,13 @@ public class UserController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @GetMapping("/register")
+    public String register(Model model , User user) {
+        model.addAttribute("user", user) ;
+        return "register";
+    }
+    
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
